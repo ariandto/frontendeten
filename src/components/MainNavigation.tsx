@@ -1,7 +1,7 @@
 export default function MainNavigation() {
   const jerseys = Array.from({ length: 10 }, (_, i) => ({
     name: `Jersey ${String.fromCharCode(65 + i)}`, // Jersey A, B, ...
-    image: `/src/assets/jersey/jersey${i + 1}.jpeg`,
+    image: `/jersey/jersey${i + 1}.jpeg`,
   }));
 
   return (
