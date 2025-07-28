@@ -6,7 +6,7 @@ export default function MainNavigation() {
 
   return (
     <main className="pt-20 pb-10 px-4 sm:px-10 bg-gray-50 min-h-screen">
-      <h2 className="text-2xl font-bold text-gray-800 mb-6 text-center">Our Jerseys TEST123</h2>
+      <h2 className="text-2xl font-bold text-gray-800 mb-6 text-center">Our Jerseys TEST123456</h2>
 
       <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-6 justify-items-center">
         {jerseys.map((item, idx) => (
