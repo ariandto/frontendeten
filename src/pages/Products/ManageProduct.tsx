@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { getProducts, deleteProduct } from "../../api/api";
+import BASE_URL from "../../api/base";
 import { Helmet } from "react-helmet";
 
 interface Product {
@@ -12,23 +13,33 @@ interface Product {
   image_url: string;
 }
 
-interface User {
-  email: string;
-  name?: string;
-}
-
 export default function ManageProduct() {
   const [products, setProducts] = useState<Product[]>([]);
-  const [user, setUser] = useState<User | null>(null); // ✅ user state
+  const [isAdmin, setIsAdmin] = useState(false);
   const [loading, setLoading] = useState(true);
+  const [checkingAuth, setCheckingAuth] = useState(true);
   const navigate = useNavigate();
 
-  // ✅ Ambil user dari localStorage atau session
+  // ✅ Ambil user dari cookie lewat /api/me
   useEffect(() => {
-    const userStr = localStorage.getItem("user");
-    if (userStr) {
-      setUser(JSON.parse(userStr));
-    }
+    const checkAdminStatus = async () => {
+      try {
+        const res = await fetch(`${BASE_URL}/me`, {
+          credentials: "include",
+        });
+
+        if (!res.ok) throw new Error("Unauthorized");
+
+        const data = await res.json();
+        setIsAdmin(data.admin === true);
+      } catch (err) {
+        console.warn("❌ Bukan admin atau belum login");
+      } finally {
+        setCheckingAuth(false);
+      }
+    };
+
+    checkAdminStatus();
   }, []);
 
   const fetchProducts = async () => {
@@ -57,8 +68,13 @@ export default function ManageProduct() {
     fetchProducts();
   }, []);
 
-  // 🔒 Validasi jika bukan admin
-  if (!user || user.email !== import.meta.env.VITE_EMAIL_ADMIN) {
+  // 🔒 Saat validasi admin masih berlangsung
+  if (checkingAuth) {
+    return <p className="p-6 text-gray-600">Memeriksa hak akses...</p>;
+  }
+
+  // 🔒 Jika bukan admin, tampilkan pesan larangan
+  if (!isAdmin) {
     return (
       <div className="p-6 text-center text-red-600">
         ❌ Anda tidak memiliki akses ke halaman ini.
@@ -91,7 +107,7 @@ export default function ManageProduct() {
           {products.map((product) => (
             <div key={product.id} className="bg-white rounded shadow p-4 flex flex-col">
               <img
-                src={product.image_url.replace(/\\/g, "/").replace("/uploads", "http://localhost:5700/uploads")}
+                src={product.image_url.replace(/\\/g, "/").replace("/uploads", `${BASE_URL}/uploads`)}
                 alt={product.name}
                 className="h-40 w-full object-cover rounded mb-3"
               />

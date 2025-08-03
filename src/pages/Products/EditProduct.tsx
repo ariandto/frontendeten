@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { getProducts } from "../../api/api";
 import BASE from "../../api/base";
+
 interface Product {
   id: number;
   name: string;
@@ -11,6 +12,13 @@ interface Product {
   image_url: string;
 }
 
+interface MeResponse {
+  uid: string;
+  email: string;
+  name: string;
+  admin: boolean;
+}
+
 export default function EditProduct() {
   const { id } = useParams();
   const navigate = useNavigate();
@@ -18,13 +26,36 @@ export default function EditProduct() {
   const [product, setProduct] = useState<Product | null>(null);
   const [imageFile, setImageFile] = useState<File | null>(null);
   const [loading, setLoading] = useState(true);
+  const [checkingAuth, setCheckingAuth] = useState(true);
+  const [isAdmin, setIsAdmin] = useState(false);
 
   const getImageUrl = (path: string): string => {
     return path.startsWith("/uploads")
-      ? `${BASE}${path.replace(/\\/g, "/")}` 
+      ? `${BASE}${path.replace(/\\/g, "/")}`
       : path;
   };
 
+  // 🔐 Cek apakah user adalah admin
+  useEffect(() => {
+    const checkAuth = async () => {
+      try {
+        const res = await fetch(`${BASE}/me`, {
+          credentials: "include",
+        });
+        if (!res.ok) throw new Error("Unauthorized");
+
+        const data: MeResponse = await res.json();
+        setIsAdmin(data.admin === true);
+      } catch (err) {
+        console.warn("❌ Akses ditolak");
+      } finally {
+        setCheckingAuth(false);
+      }
+    };
+    checkAuth();
+  }, []);
+
+  // 🔃 Fetch detail produk
   useEffect(() => {
     const fetchProduct = async () => {
       try {
@@ -38,8 +69,10 @@ export default function EditProduct() {
       }
     };
 
-    fetchProduct();
-  }, [id]);
+    if (isAdmin) {
+      fetchProduct();
+    }
+  }, [id, isAdmin]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -53,9 +86,9 @@ export default function EditProduct() {
       formData.append("price", product.price.toString());
 
       if (imageFile) {
-        formData.append("image", imageFile); // upload baru
+        formData.append("image", imageFile);
       } else {
-        formData.append("image_url", product.image_url); // tetap pakai yang lama
+        formData.append("image_url", product.image_url);
       }
 
       const res = await fetch(`${BASE}/api/products/${product.id}`, {
@@ -74,6 +107,19 @@ export default function EditProduct() {
     }
   };
 
+  // 🔄 Sementara cek hak akses
+  if (checkingAuth) return <p className="p-4">Memeriksa hak akses...</p>;
+
+  // 🔒 Jika bukan admin
+  if (!isAdmin) {
+    return (
+      <div className="p-6 text-center text-red-600">
+        ❌ Anda tidak memiliki akses ke halaman ini.
+      </div>
+    );
+  }
+
+  // 📦 Jika belum selesai loading data produk
   if (loading || !product) return <p className="p-4">Memuat data produk...</p>;
 
   return (

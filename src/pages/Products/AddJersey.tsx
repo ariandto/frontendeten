@@ -1,6 +1,14 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { createProductWithUpload } from "../../api/api";
+import BASE from "../../api/base";
+
+interface MeResponse {
+  uid: string;
+  email: string;
+  name: string;
+  admin: boolean;
+}
 
 export default function AddJersey() {
   const [name, setName] = useState("");
@@ -9,7 +17,29 @@ export default function AddJersey() {
   const [price, setPrice] = useState(0);
   const [image, setImage] = useState<File | null>(null);
 
+  const [checkingAuth, setCheckingAuth] = useState(true);
+  const [isAdmin, setIsAdmin] = useState(false);
   const navigate = useNavigate();
+
+  // 🔐 Cek apakah user adalah admin
+  useEffect(() => {
+    const checkAuth = async () => {
+      try {
+        const res = await fetch(`${BASE}/me`, {
+          credentials: "include",
+        });
+        if (!res.ok) throw new Error("Unauthorized");
+
+        const data: MeResponse = await res.json();
+        setIsAdmin(data.admin === true);
+      } catch (err) {
+        console.warn("❌ Akses ditolak");
+      } finally {
+        setCheckingAuth(false);
+      }
+    };
+    checkAuth();
+  }, []);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -35,6 +65,16 @@ export default function AddJersey() {
       alert("Gagal menambahkan produk.");
     }
   };
+
+  if (checkingAuth) return <p className="p-4">Memeriksa hak akses...</p>;
+
+  if (!isAdmin) {
+    return (
+      <div className="p-6 text-center text-red-600">
+        ❌ Anda tidak memiliki akses ke halaman ini.
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-gray-100 py-10 px-4">
