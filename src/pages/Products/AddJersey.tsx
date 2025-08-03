@@ -21,7 +21,7 @@ export default function AddJersey() {
   const [isAdmin, setIsAdmin] = useState(false);
   const navigate = useNavigate();
 
-  // 🔐 Cek apakah user adalah admin
+  //  Cek apakah user adalah admin
   useEffect(() => {
     const checkAuth = async () => {
       try {

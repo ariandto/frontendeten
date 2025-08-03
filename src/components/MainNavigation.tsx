@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { getProducts } from "../api/api";
 import { Helmet } from "react-helmet";
+import BASE from "../api/base";
 
 interface Product {
   id: number;
@@ -11,14 +12,13 @@ interface Product {
   image_url: string;
 }
 
-// ✅ Convert path from \ to / and prepend BASE_URL
+// ✅ Helper URL gambar
 const getImageUrl = (path: string): string => {
-  const base = "http://localhost:5700";
+  if (!path) return "/default-image.jpg";
   return path.startsWith("/")
-    ? `${base}${path.replace(/\\/g, "/")}`
+    ? `${BASE}${path.replace(/\\/g, "/")}`
     : path;
 };
-
 
 export default function MainNavigation() {
   const [products, setProducts] = useState<Product[]>([]);
@@ -28,11 +28,11 @@ export default function MainNavigation() {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const res = await getProducts(); // ✅ credentials: "include" sudah diatur di api.ts
+        const res = await getProducts();
         setProducts(res);
       } catch (err) {
-        setError("Gagal memuat produk");
         console.error("❌ Gagal fetch produk:", err);
+        setError("Gagal memuat produk, silakan coba lagi.");
       } finally {
         setLoading(false);
       }
@@ -69,6 +69,11 @@ export default function MainNavigation() {
                 src={getImageUrl(product.image_url)}
                 alt={product.name}
                 className="w-full h-40 object-cover"
+                onError={(e) => {
+                  const img = e.target as HTMLImageElement;
+                  img.onerror = null; // cegah infinite loop
+                  img.src = "/default-image.jpg";
+                }}
               />
               <div className="p-4 text-sm text-gray-700">
                 <h3 className="font-semibold text-base mb-1">{product.name}</h3>

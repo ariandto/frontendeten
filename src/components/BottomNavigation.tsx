@@ -16,7 +16,7 @@ export default function BottomNavigation() {
   useEffect(() => {
     const fetchMe = async () => {
       try {
-        const res = await fetch(`${BASE_URL}/me`, {
+        const res = await fetch(`${BASE_URL}/api/me`, {
           credentials: "include", // penting agar cookie dikirim
         });
 

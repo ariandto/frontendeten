@@ -39,7 +39,7 @@ export default function EditProduct() {
   useEffect(() => {
     const checkAuth = async () => {
       try {
-        const res = await fetch(`${BASE}/me`, {
+        const res = await fetch(`${BASE}/api/me`, {
           credentials: "include",
         });
         if (!res.ok) throw new Error("Unauthorized");
@@ -100,7 +100,7 @@ export default function EditProduct() {
       if (!res.ok) throw new Error("Gagal memperbarui produk");
 
       alert("✅ Produk berhasil diperbarui!");
-      navigate("/products");
+      navigate("/manage-product");
     } catch (err) {
       console.error("❌ Gagal memperbarui produk:", err);
       alert("Terjadi kesalahan saat memperbarui produk.");
