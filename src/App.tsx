@@ -8,6 +8,9 @@ import LoginPage from "./pages/LoginPage";
 import { useEffect, useRef } from "react";
 import { onValue, ref } from "firebase/database";
 import { rtdb } from "./firebase/firebase";
+import AddJersey from "./pages/Products/AddJersey";
+import EditProduct from "./pages/Products/EditProduct";
+import ManageProduct from "./pages/Products/ManageProduct";
 
 function App() {
   const prevMessageCountRef = useRef(0);
@@ -58,6 +61,9 @@ function App() {
         <Route path="/chat" element={<ChatPage />} />
         <Route path="/admin" element={<AdminPanel />} />
         <Route path="/login" element={<LoginPage />} />
+        <Route path="/add-product" element={<AddJersey />} />
+        <Route path="/manage-product" element={<ManageProduct />} />
+        <Route path="/edit-product/:id" element={<EditProduct />} />
       </Routes>
       <BottomNavigation />
     </>
