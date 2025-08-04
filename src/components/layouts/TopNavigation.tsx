@@ -138,7 +138,7 @@ export default function TopNavigation() {
 
       <div className="flex items-center gap-6 text-sm sm:text-base text-gray-700 font-medium">
         <Link to="/about" className="hover:text-black transition">About</Link>
-        <Link to="/contact" className="hover:text-black transition">Contacts</Link>
+        
 
         {/* ✅ Admin */}
         {user?.email === ADMIN_EMAIL && (
