@@ -70,13 +70,40 @@ export default function TopNavigation() {
     }
   }, [user]);
 
-  const handleLogin = async () => {
-    try {
-      await signInWithPopup(auth, provider);
-    } catch (error) {
-      alert("Gagal login");
+ const handleLogin = async () => {
+  try {
+    const result = await signInWithPopup(auth, provider);
+    const user = result.user;
+
+    if (!user) throw new Error("User tidak ditemukan");
+
+    const idToken = await user.getIdToken(true); // ✅ Ambil ID Token
+
+    // ✅ Kirim ke backend agar dapat session cookie
+    const res = await fetch("http://localhost:5700/api/login", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      credentials: "include", // WAJIB agar cookie tersimpan
+      body: JSON.stringify({ idToken }),
+    });
+
+    if (!res.ok) {
+      const err = await res.json().catch(() => ({}));
+      throw new Error(err.error || "Login gagal");
     }
-  };
+
+    console.log("✅ Login sukses");
+
+    // refresh halaman atau arahkan ke home
+    window.location.reload(); // agar auth re-checked di frontend
+  } catch (error: any) {
+    console.error("❌ Login error:", error);
+    alert("Gagal login: " + error.message);
+  }
+};
+
 
   const handleLogout = async () => {
     try {
