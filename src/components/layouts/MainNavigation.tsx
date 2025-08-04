@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
-import { getProducts } from "../api/api";
+import { getProducts } from "../../api/api";
 import { Helmet } from "react-helmet";
-import BASE from "../api/base";
+import BASE from "../../api/base";
 
 interface Product {
   id: number;
@@ -15,9 +15,7 @@ interface Product {
 // ✅ Helper URL gambar
 const getImageUrl = (path: string): string => {
   if (!path) return "/default-image.jpg";
-  return path.startsWith("/")
-    ? `${BASE}${path.replace(/\\/g, "/")}`
-    : path;
+  return path.startsWith("/") ? `${BASE}${path.replace(/\\/g, "/")}` : path;
 };
 
 export default function MainNavigation() {
@@ -45,17 +43,27 @@ export default function MainNavigation() {
     <main className="pt-20 pb-10 px-4 sm:px-10 bg-gray-50 min-h-screen">
       <Helmet>
         <title>Jersey Catalog - EtenSport</title>
-        <meta name="description" content="Browse our premium sportswear catalog" />
+        <meta
+          name="description"
+          content="Browse our premium sportswear catalog"
+        />
       </Helmet>
 
       <h2 className="text-2xl font-bold text-gray-800 mb-6 text-center">
         Our Jerseys Catalogs
       </h2>
-
       {loading ? (
         <p className="text-center text-gray-500">Memuat katalog...</p>
       ) : error ? (
-        <p className="text-center text-red-500">{error}</p>
+        <div className="text-center">
+          <p className="text-red-500 mb-4">{error}</p>
+          <button
+            onClick={() => (window.location.href = "/login")}
+            className="px-4 py-2 bg-gray-800 text-white rounded hover:bg-black transition"
+          >
+            Login untuk mengakses
+          </button>
+        </div>
       ) : products.length === 0 ? (
         <p className="text-center text-gray-500">Belum ada produk tersedia.</p>
       ) : (

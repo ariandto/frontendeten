@@ -123,7 +123,7 @@ export default function EditProduct() {
   if (loading || !product) return <p className="p-4">Memuat data produk...</p>;
 
   return (
-    <div className="min-h-screen bg-gray-100 py-10 px-4">
+    <div className="min-h-screen bg-gray-100 py-10 px-4 mt-10">
       <div className="max-w-md mx-auto bg-white p-6 rounded shadow-md">
         <h2 className="text-xl font-bold mb-4">Edit Produk Jersey</h2>
 

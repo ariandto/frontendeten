@@ -1,9 +1,10 @@
-import { Link, useLocation } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
-import { auth, rtdb, provider } from "../firebase/firebase";
+import { auth, rtdb, provider } from "../../firebase/firebase";
 import { signInWithPopup, signOut, onAuthStateChanged } from "firebase/auth";
 import { onValue, ref } from "firebase/database";
 import { MessageCircle } from "lucide-react";
+import BASE from "../../api/base";
 
 const ADMIN_EMAIL = import.meta.env.VITE_EMAIL_ADMIN;
 
@@ -12,6 +13,7 @@ export default function TopNavigation() {
   const [unreadCount, setUnreadCount] = useState<number>(0);
   const [hasVisitorReply, setHasVisitorReply] = useState(false);
   const location = useLocation();
+  const navigate = useNavigate();
 
   useEffect(() => {
     const unsub = onAuthStateChanged(auth, (u) => {
@@ -80,7 +82,7 @@ export default function TopNavigation() {
     const idToken = await user.getIdToken(true); // ✅ Ambil ID Token
 
     // ✅ Kirim ke backend agar dapat session cookie
-    const res = await fetch("http://localhost:5700/api/login", {
+    const res = await fetch(`${BASE}/api/login`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -106,17 +108,29 @@ export default function TopNavigation() {
 
 
   const handleLogout = async () => {
-    try {
-      await signOut(auth);
-    } catch (error) {
-      alert("Gagal logout");
-    }
-  };
+  try {
+    // 1. Hapus sesi di Firebase Auth
+    await signOut(auth);
+
+    // 2. Hapus session cookie di backend
+    await fetch(`${BASE}/api/logout`, {
+      method: "POST",
+      credentials: "include", // wajib agar bisa kirim cookie ke backend
+    });
+
+    // 3. Redirect ke form login atau reload
+    navigate("/login"); // atau navigate("/login") jika pakai react-router
+  } catch (error) {
+    console.error("❌ Logout error:", error);
+    alert("Gagal logout");
+  }
+};
+
 
   return (
     <nav className="w-full fixed top-0 left-0 right-0 z-50 bg-white border-b border-gray-200 px-6 py-2 flex justify-between items-center">
-      <Link to="/" className="flex items-center gap-3 group">
-        <div className="w-16 h-16 rounded-full bg-white flex items-center justify-center transition-transform duration-300 group-hover:scale-105 group-hover:shadow-md">
+      <Link to="/home" className="flex items-center gap-3 group">
+        <div className="w-10 h-10 rounded-full bg-white flex items-center justify-center transition-transform duration-300 group-hover:scale-105 group-hover:shadow-md">
           <span className="text-2xl font-bold text-black">eten.</span>
         </div>
         <span className="text-xl font-bold text-gray-800 hidden sm:inline">Eten Sports Wear</span>

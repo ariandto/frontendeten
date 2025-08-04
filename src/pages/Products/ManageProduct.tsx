@@ -13,6 +13,8 @@ interface Product {
   image_url: string;
 }
 
+
+
 export default function ManageProduct() {
   const [products, setProducts] = useState<Product[]>([]);
   const [isAdmin, setIsAdmin] = useState(false);
@@ -88,7 +90,7 @@ export default function ManageProduct() {
         <title>Manajemen Produk - EtenSport</title>
       </Helmet>
 
-      <div className="flex justify-between items-center mb-6">
+      <div className="flex justify-between items-center mt-10">
         <h1 className="text-2xl font-bold text-gray-800">Manajemen Produk</h1>
         <button
           onClick={() => navigate("/add-product")}

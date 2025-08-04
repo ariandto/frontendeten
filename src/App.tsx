@@ -1,7 +1,7 @@
 import { Routes, Route } from "react-router-dom";
-import TopNavigation from "./components/TopNavigation";
-import MainNavigation from "./components/MainNavigation";
-import BottomNavigation from "./components/BottomNavigation";
+import TopNavigation from "./components/layouts/TopNavigation";
+import MainNavigation from "./components/layouts/MainNavigation";
+import BottomNavigation from "./components/layouts/BottomNavigation";
 import ChatPage from "./pages/ChatPage";
 import AdminPanel from "./pages/AdminPanel";
 import LoginPage from "./pages/LoginPage";
@@ -57,7 +57,7 @@ function App() {
 
       <TopNavigation />
       <Routes>
-        <Route path="/" element={<MainNavigation />} />
+        <Route path="/home" element={<MainNavigation />} />
         <Route path="/chat" element={<ChatPage />} />
         <Route path="/admin" element={<AdminPanel />} />
         <Route path="/login" element={<LoginPage />} />

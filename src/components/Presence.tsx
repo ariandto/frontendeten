@@ -10,7 +10,7 @@ import { auth, rtdb } from "../firebase/firebase";
 export default function Presence() {
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (user) => {
-      if (user && user.email === "ariandto@gmail.com") {
+      if (user && user.email === import.meta.env.VITE_EMAIL_ADMIN) {
         const statusRef = ref(rtdb, "presence/admin");
 
         // Tulis status online saat user terautentikasi sebagai admin

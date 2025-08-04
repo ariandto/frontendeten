@@ -1,14 +1,9 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { createProductWithUpload } from "../../api/api";
-import BASE from "../../api/base";
+import BASE_URL from "../../api/base";
 
-interface MeResponse {
-  uid: string;
-  email: string;
-  name: string;
-  admin: boolean;
-}
+
 
 export default function AddJersey() {
   const [name, setName] = useState("");
@@ -23,22 +18,24 @@ export default function AddJersey() {
 
   //  Cek apakah user adalah admin
   useEffect(() => {
-    const checkAuth = async () => {
+    const checkAdminStatus = async () => {
       try {
-        const res = await fetch(`${BASE}/me`, {
+        const res = await fetch(`${BASE_URL}/api/me`, {
           credentials: "include",
         });
+
         if (!res.ok) throw new Error("Unauthorized");
 
-        const data: MeResponse = await res.json();
+        const data = await res.json();
         setIsAdmin(data.admin === true);
       } catch (err) {
-        console.warn("❌ Akses ditolak");
+        console.warn("❌ Bukan admin atau belum login");
       } finally {
         setCheckingAuth(false);
       }
     };
-    checkAuth();
+
+    checkAdminStatus();
   }, []);
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -77,7 +74,7 @@ export default function AddJersey() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-100 py-10 px-4">
+    <div className="min-h-screen bg-gray-100 py-10 px-4 mt-10">
       <div className="max-w-md mx-auto bg-white p-6 rounded shadow-md">
         <h2 className="text-xl font-bold mb-4">Tambah Produk Jersey</h2>
 

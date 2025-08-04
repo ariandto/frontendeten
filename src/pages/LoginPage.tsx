@@ -3,6 +3,7 @@ import { signInWithPopup } from "firebase/auth";
 import { ref, set, onDisconnect } from "firebase/database";
 import { useNavigate } from "react-router-dom";
 import { useEffect } from "react";
+import BASE from "../api/base";
 
 export default function LoginPage() {
   const navigate = useNavigate();
@@ -28,7 +29,7 @@ export default function LoginPage() {
       const idToken = await user.getIdToken();
 
       // Kirim token ke backend untuk dibuatkan session cookie
-      const res = await fetch("http://localhost:5700/api/login", {
+      const res = await fetch(`${BASE}/api/login`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -45,8 +46,8 @@ export default function LoginPage() {
       const data = await res.json();
       console.log("✅ Login berhasil:", data);
 
-      // Navigasi ke dashboard
-      navigate("/");
+      // Navigasi ke home
+      navigate("/home");
     } catch (error: any) {
       alert("Gagal login: " + error.message);
     }
