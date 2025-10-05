@@ -95,7 +95,7 @@ export default function TopNavigation() {
       const err = await res.json().catch(() => ({}));
       throw new Error(err.error || "Login gagal");
     }
-
+    navigate("/home");
     console.log("✅ Login sukses");
 
     // refresh halaman atau arahkan ke home
@@ -143,12 +143,12 @@ export default function TopNavigation() {
         {/* ✅ Admin */}
         {user?.email === ADMIN_EMAIL && (
           <>
-            <Link
+            {/* <Link
               to="/manage-product"
               className={`hover:text-black transition ${location.pathname === "/products" ? "font-bold" : ""}`}
             >
               Manage
-            </Link>
+            </Link> */}
             <Link
               to="/admin"
               className={`relative hover:text-black transition ${location.pathname === "/admin" ? "font-bold" : ""}`}

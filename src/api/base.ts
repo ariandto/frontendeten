@@ -1,3 +1,3 @@
-const BASE = "https://etenapi.ariandto.pro";
+const BASE = "http://localhost:5700";
 
 export default BASE;

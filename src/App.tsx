@@ -11,6 +11,7 @@ import { rtdb } from "./firebase/firebase";
 import AddJersey from "./pages/Products/AddJersey";
 import EditProduct from "./pages/Products/EditProduct";
 import ManageProduct from "./pages/Products/ManageProduct";
+import AboutPage from "./pages/AboutPage";
 
 function App() {
   const prevMessageCountRef = useRef(0);
@@ -64,6 +65,7 @@ function App() {
         <Route path="/add-product" element={<AddJersey />} />
         <Route path="/manage-product" element={<ManageProduct />} />
         <Route path="/edit-product/:id" element={<EditProduct />} />
+        <Route path="/about" element={<AboutPage />} />
       </Routes>
       <BottomNavigation />
     </>

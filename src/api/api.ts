@@ -1,5 +1,5 @@
 
-const BASE_URL =  "https://etenapi.ariandto.pro/api";
+const BASE_URL =  "http://localhost:5700/api";
 
 export const getProducts = async () => {
   const res = await fetch(`${BASE_URL}/products`, {
