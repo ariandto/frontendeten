@@ -49,7 +49,7 @@ export default function AboutPage() {
           <p className="text-gray-600 text-sm mt-2 leading-relaxed">
             Eten Sport merupakan Penyedia Jersey <br />
             Premium yang terpercaya di Cikarang sejak <br />
-            tahun 2025
+            tahun 2024
           </p>
         </div>
       </div>
