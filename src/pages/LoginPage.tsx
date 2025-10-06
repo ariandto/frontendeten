@@ -28,13 +28,15 @@ export default function LoginPage() {
 
       const idToken = await user.getIdToken();
 
+      console.log("🔹 ID Token:", idToken);
+
       // Kirim token ke backend untuk dibuatkan session cookie
       const res = await fetch(`${BASE}/api/login`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
-        credentials: "include", // <- penting agar cookie tersimpan
+        credentials: "include", // 🔑 wajib supaya cookie tersimpan
         body: JSON.stringify({ idToken }),
       });
 
@@ -46,9 +48,13 @@ export default function LoginPage() {
       const data = await res.json();
       console.log("✅ Login berhasil:", data);
 
-      // Navigasi ke home
-      navigate("/home");
+      // Tunggu sedikit supaya cookie tersimpan sebelum navigasi
+      setTimeout(() => {
+        navigate("/home");
+      }, 200);
+
     } catch (error: any) {
+      console.error(error);
       alert("Gagal login: " + error.message);
     }
   };
